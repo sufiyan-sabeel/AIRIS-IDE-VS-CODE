@@ -1,0 +1,21 @@
+{
+  "name": "AIRIS Mobile IDE",
+  "short_name": "AIRIS IDE",
+  "description": "Mobile-first PWA IDE with Monaco Editor for Android and tablets",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "theme_color": "#000000",
+  "background_color": "#000000",
+  "scope": "/",
+  "icons": [
+    { "src": "/icons/icon-192x192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icons/icon-512x512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icons/icon-512x512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "New File", "short_name": "New File", "description": "Create a new file", "url": "/?action=new" },
+    { "name": "Terminal", "short_name": "Terminal", "description": "Open terminal", "url": "/?view=terminal" },
+    { "name": "AI Assistant", "short_name": "AIRIS AI", "description": "Open AI chat", "url": "/?view=ai" }
+  ]
+}

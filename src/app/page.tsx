@@ -5,17 +5,35 @@ import { TopBar } from '@/components/layout/TopBar';
 import { BottomNav } from '@/components/layout/BottomNav';
 import { PanelContainer } from '@/components/layout/PanelContainer';
 import { GestureHandler } from '@/components/layout/GestureHandler';
+import { CommandPalette } from '@/components/panels/CommandPalette';
 import Workspace from '@/app/workspace';
 import { useUIStore, useWorkspaceStore } from '@/store/stores';
 
 export default function MainPage() {
-  const { fullscreenEditor } = useUIStore();
+  const { fullscreenEditor, commandPaletteOpen, setCommandPaletteOpen } = useUIStore();
   const { files, setFiles } = useWorkspaceStore();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  // Keyboard shortcut: Ctrl+P / Cmd+P for Quick Open, Ctrl+Shift+P / Cmd+Shift+P for Commands
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const isCmd = e.metaKey || e.ctrlKey;
+      if (isCmd && e.key === 'p') {
+        e.preventDefault();
+        setCommandPaletteOpen(true);
+      }
+      if (isCmd && e.shiftKey && e.key === 'P') {
+        e.preventDefault();
+        setCommandPaletteOpen(true);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [setCommandPaletteOpen]);
 
   // Initialize demo workspace files
   useEffect(() => {
@@ -60,6 +78,9 @@ export default function MainPage() {
         </main>
       </div>
       {!fullscreenEditor && <BottomNav />}
+
+      {/* Command Palette (overlay) */}
+      <CommandPalette />
     </div>
   );
 }

@@ -16,7 +16,8 @@ export function OutputPanel() {
     { id: 'extensions', name: 'Extensions', lines: ['[EXT] Loading extensions...', '[EXT] No extensions installed'] },
     { id: 'git', name: 'Git Output', lines: ['[GIT] No repository configured'] },
   ];
-  const active = channels.find(c => c.id === activeChannel) || channels[0];
+  const active = channels.find(c => c.id === activeChannel);
+  if (!active) return null;
 
   return (
     <div className="flex flex-col h-full">

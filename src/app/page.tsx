@@ -6,6 +6,7 @@ import { BottomNav } from '@/components/layout/BottomNav';
 import { PanelContainer } from '@/components/layout/PanelContainer';
 import { GestureHandler } from '@/components/layout/GestureHandler';
 import { CommandPalette } from '@/components/panels/CommandPalette';
+import { NotificationsContainer } from '@/components/notifications/NotificationsContainer';
 import Workspace from '@/app/workspace';
 import { useUIStore, useWorkspaceStore } from '@/store/stores';
 
@@ -81,6 +82,9 @@ export default function MainPage() {
 
       {/* Command Palette (overlay) */}
       <CommandPalette />
+
+      {/* Notifications */}
+      <NotificationsContainer />
     </div>
   );
 }

@@ -193,3 +193,152 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
   setRootDir: (d) => set({ rootDir: d }),
   setFiles: (f) => set({ files: f }),
 }));
+
+// ─── Problems Store ────────────────────────────────────────────
+export interface Problem {
+  type: 'error' | 'warning' | 'info';
+  message: string;
+  file: string;
+  line: number;
+  column: number;
+  code?: string;
+}
+
+interface ProblemsState {
+  problems: Problem[];
+  activeFileProblems: Problem[];
+  filter: string;
+  addProblem: (p: Problem) => void;
+  clearProblems: () => void;
+  setFilter: (f: string) => void;
+}
+
+export const useProblemsStore = create<ProblemsState>((set, get) => ({
+  problems: [],
+  activeFileProblems: [],
+  filter: '',
+  addProblem: (p) => set({ problems: [...get().problems, p] }),
+  clearProblems: () => set({ problems: [], activeFileProblems: [] }),
+  setFilter: (f) => set({ filter: f }),
+}));
+
+// ─── Notifications Store ───────────────────────────────────────
+export interface Notification {
+  id: string;
+  type: 'info' | 'warning' | 'error' | 'success';
+  message: string;
+  actions?: { label: string; action: () => void }[];
+  timestamp: number;
+}
+
+interface NotificationsState {
+  notifications: Notification[];
+  toasts: Notification[];
+  addNotification: (n: Omit<Notification, 'id' | 'timestamp'>) => void;
+  addToast: (n: Omit<Notification, 'id' | 'timestamp'>) => void;
+  dismissNotification: (id: string) => void;
+  dismissToast: (id: string) => void;
+  clearAll: () => void;
+}
+
+let notifId = 0;
+export const useNotificationsStore = create<NotificationsState>((set, get) => ({
+  notifications: [],
+  toasts: [],
+  addNotification: (n) => {
+    const id = `n-${++notifId}`;
+    set({ notifications: [...get().notifications, { ...n, id, timestamp: Date.now() }] });
+  },
+  addToast: (n) => {
+    const id = `t-${++notifId}`;
+    const toast = { ...n, id, timestamp: Date.now() };
+    set({ toasts: [...get().toasts, toast] });
+    setTimeout(() => {
+      const state = useNotificationsStore.getState();
+      set({ toasts: state.toasts.filter(t => t.id !== id) });
+    }, 5000);
+  },
+  dismissNotification: (id) => set({ notifications: get().notifications.filter(n => n.id !== id) }),
+  dismissToast: (id) => set({ toasts: get().toasts.filter(t => t.id !== id) }),
+  clearAll: () => set({ notifications: [] }),
+}));
+
+// ─── Debug Store ────────────────────────────────────────────────
+interface DebugState {
+  running: boolean;
+  breakpoints: { file: string; line: number }[];
+  callStack: { name: string; file: string; line: number }[];
+  variables: { name: string; value: string; type: string }[];
+  watches: { expression: string; value: string }[];
+  setRunning: (r: boolean) => void;
+  addBreakpoint: (file: string, line: number) => void;
+  removeBreakpoint: (file: string, line: number) => void;
+  setCallStack: (cs: DebugState['callStack']) => void;
+  setVariables: (v: DebugState['variables']) => void;
+  addWatch: (expr: string) => void;
+  removeWatch: (expr: string) => void;
+}
+
+export const useDebugStore = create<DebugState>((set, get) => ({
+  running: false,
+  breakpoints: [],
+  callStack: [],
+  variables: [],
+  watches: [],
+  setRunning: (r) => set({ running: r }),
+  addBreakpoint: (file, line) => set({ breakpoints: [...get().breakpoints, { file, line }] }),
+  removeBreakpoint: (file, line) => set({ breakpoints: get().breakpoints.filter(b => !(b.file === file && b.line === line)) }),
+  setCallStack: (cs) => set({ callStack: cs }),
+  setVariables: (v) => set({ variables: v }),
+  addWatch: (expr) => set({ watches: [...get().watches, { expression: expr, value: '' }] }),
+  removeWatch: (expr) => set({ watches: get().watches.filter(w => w.expression !== expr) }),
+}));
+
+// ─── Status Bar Store ───────────────────────────────────────────
+interface StatusBarState {
+  language: string;
+  encoding: string;
+  indentation: string;
+  lineEnding: string;
+  line: number;
+  column: number;
+  selectedCount: number;
+  setLanguage: (l: string) => void;
+  setCursor: (line: number, col: number, count: number) => void;
+  setIndentation: (i: string) => void;
+}
+
+export const useStatusBarStore = create<StatusBarState>((set) => ({
+  language: 'plaintext', encoding: 'UTF-8', indentation: 'Spaces: 2', lineEnding: 'LF',
+  line: 1, column: 1, selectedCount: 0,
+  setLanguage: (l) => set({ language: l }),
+  setCursor: (line, col, count) => set({ line, column: col, selectedCount: count }),
+  setIndentation: (i) => set({ indentation: i }),
+}));
+
+// ─── Keybindings Store ─────────────────────────────────────────
+export interface Keybinding {
+  id: string;
+  label: string;
+  keys: string[];
+  when?: string;
+}
+
+interface KeybindingsState {
+  bindings: Keybinding[];
+}
+
+export const useKeybindingsStore = create<KeybindingsState>(() => ({
+  bindings: [
+    { id: 'workbench.action.showCommands', label: 'Command Palette', keys: ['Ctrl+P'] },
+    { id: 'workbench.action.quickOpen', label: 'Quick Open', keys: ['Ctrl+P'] },
+    { id: 'workbench.action.toggleSidebar', label: 'Toggle Explorer', keys: ['Ctrl+B'] },
+    { id: 'workbench.action.terminal.toggleTerminal', label: 'Toggle Terminal', keys: ['Ctrl+`'] },
+    { id: 'editor.action.formatDocument', label: 'Format Document', keys: ['Shift+Alt+F'] },
+    { id: 'editor.action.commentLine', label: 'Toggle Line Comment', keys: ['Ctrl+/'] },
+    { id: 'editor.action.addSelectionToNextFindMatch', label: 'Add Cursor Above', keys: ['Ctrl+Alt+↑'] },
+    { id: 'editor.action.moveLinesUpAction', label: 'Move Line Up', keys: ['Alt+↑'] },
+    { id: 'workbench.action.toggleFullScreen', label: 'Toggle Fullscreen', keys: ['F11'] },
+    { id: 'workbench.action.splitEditor', label: 'Split Editor', keys: ['Ctrl+\'] },
+  ],
+}));

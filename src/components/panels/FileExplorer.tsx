@@ -19,7 +19,7 @@ export function FileExplorer() {
     const pos = 'touches' in e
       ? { x: e.touches[0]?.clientX ?? 0, y: e.touches[0]?.clientY ?? 0 }
       : { x: e.clientX, y: e.clientY };
-    setContextMenu(pos);
+    setContextMenu({ ...pos, path });
   };
 
   const handleCreateFile = () => {

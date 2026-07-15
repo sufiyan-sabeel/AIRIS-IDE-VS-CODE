@@ -1,12 +1,12 @@
 'use client';
 
-import { useStatusBarStore, useGitStore, useEditorStore } from '@/store/stores';
+import { useStatusBarStore, useGitStore, useEditorStore, useUIStore } from '@/store/stores';
 
 export function StatusBar() {
   const { language, encoding, indentation, line, column, selectedCount } = useStatusBarStore();
   const { currentBranch } = useGitStore();
   const { fontZoom } = useEditorStore();
-  const { activeView } = require('@/store/stores').useUIStore.getState();
+  const { activeView } = useUIStore();
 
   const rightItems = [
     { label: `Ln ${line}, Col ${column}${selectedCount > 1 ? ` (${selectedCount} selected)` : ''}`, onClick: () => {} },

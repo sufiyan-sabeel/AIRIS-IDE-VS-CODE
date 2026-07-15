@@ -339,6 +339,6 @@ export const useKeybindingsStore = create<KeybindingsState>(() => ({
     { id: 'editor.action.addSelectionToNextFindMatch', label: 'Add Cursor Above', keys: ['Ctrl+Alt+↑'] },
     { id: 'editor.action.moveLinesUpAction', label: 'Move Line Up', keys: ['Alt+↑'] },
     { id: 'workbench.action.toggleFullScreen', label: 'Toggle Fullscreen', keys: ['F11'] },
-    { id: 'workbench.action.splitEditor', label: 'Split Editor', keys: ['Ctrl+\'] },
+    { id: 'workbench.action.splitEditor', label: 'Split Editor', keys: ['Ctrl+\\'] },
   ],
 }));

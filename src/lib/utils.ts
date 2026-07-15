@@ -1,3 +1,6 @@
-import { cn } from '@/lib/utils';
-import { CLASS_VARIANCE_AUTHORITY } from 'class-variance-authority'; // placeholder
-import { clsx } from 'clsx'; // placeholder
+import { type ClassValue, clsx } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
